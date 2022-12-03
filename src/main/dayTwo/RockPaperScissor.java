@@ -13,11 +13,51 @@ public class RockPaperScissor {
         this.score = new ArrayList<>();
         try {
             readMovesFromFile();
-            computeScoreForMoves();
+            //computeScoreForMovesPartOne();
+            computeScoreForMovesPartTwo();
         }catch(IOException io){
             throw new RuntimeException("Error 404");
         }
     }
+
+    private void computeScoreForMovesPartTwo() {
+        for (String s:moves) {
+            int scoreToBeAdded = getScoreForYourResult(s.charAt(2));
+            char yourPick = getYourPickBasedOnEnemyPick(scoreToBeAdded,s.charAt(0));
+            scoreToBeAdded += getPointsForYourPick(yourPick,'A','B');
+            score.add(scoreToBeAdded);
+        }
+    }
+
+    private char getYourPickBasedOnEnemyPick(int score,char enemyPick) {
+        if(score == 6){
+            return getYourPickBasedOnResult(enemyPick,'B','C','A');
+        } else if (score == 0) {
+            return getYourPickBasedOnResult(enemyPick,'C','A','B');
+        }else{
+            return enemyPick;
+        }
+    }
+    private char getYourPickBasedOnResult(char enemyPick,char firstSlot,char secondSlot,char thirdSlot){
+        if(enemyPick == 'A'){
+            return firstSlot;
+        } else if (enemyPick == 'B') {
+            return secondSlot;
+        }else {
+            return thirdSlot;
+        }
+    }
+
+    private int getScoreForYourResult(char input) {
+        if(input == 'Y'){
+            return 3;
+        } else if (input == 'Z') {
+            return 6;
+        }else{
+            return 0;
+        }
+    }
+
     private void readMovesFromFile() throws IOException {
         BufferedReader read = new BufferedReader(new FileReader("src/resource/inputRPS.txt"));
         String input;
@@ -25,7 +65,7 @@ public class RockPaperScissor {
             moves.add(input);
         }
     }
-    private void computeScoreForMoves(){
+    private void computeScoreForMovesPartOne(){
         for (String s:moves) {
             int scoreToBeAdded = getPointsForYourPick(s.charAt(2),'X','Y');
             scoreToBeAdded += resultOfRound(scoreToBeAdded,s.charAt(0));
