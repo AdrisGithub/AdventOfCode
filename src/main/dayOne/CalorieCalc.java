@@ -6,9 +6,11 @@ import java.util.ArrayList;
 public class CalorieCalc {
 
     private final ArrayList<ArrayList<Integer>> elvesCalories;
+    private final ArrayList<Integer> elvesSumCalories;
 
     public CalorieCalc() {
         this.elvesCalories = new ArrayList<>();
+        this.elvesSumCalories = new ArrayList<>();
         try {
             readCaloriesFromFile();
         }catch(IOException no){
@@ -28,23 +30,29 @@ public class CalorieCalc {
                 elf = new ArrayList<>();
             }
         }
+        calcSumOfEachElf();
+    }
+    private void calcSumOfEachElf(){
+        for (ArrayList<Integer> ints:elvesCalories) {
+            int temp =0;
+            for (Integer i:ints) {
+                temp += i;
+            }
+            elvesSumCalories.add(temp);
+        }
+    }
+    public long calc3HighestElves(){
+        Object[] sortedCal= elvesSumCalories.stream().sorted().toArray();
+        return((int) sortedCal[sortedCal.length-1]+(int) sortedCal[sortedCal.length-2]+(int) sortedCal[sortedCal.length-3]);
     }
     public int calcMostCalories(){
-        int highestCal=0;
-        for (ArrayList<Integer> ar:elvesCalories) {
-            int elvesCal = 0;
-            for (Integer i:ar) {
-                elvesCal += i;
-            }
-            if(elvesCal>highestCal){
-                highestCal = elvesCal;
-            }
-        }
-        return highestCal;
+        Object[] sortedCal= elvesSumCalories.stream().sorted().toArray();
+        return (int) sortedCal[sortedCal.length-1];
     }
 
     public static void main(String[] args) {
         CalorieCalc calc = new CalorieCalc();
         System.out.println(calc.calcMostCalories());
+        System.out.println(calc.calc3HighestElves());
     }
 }
