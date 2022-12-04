@@ -7,21 +7,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BackpackOrganization {
-    List<String> backpacks;
-    List<Integer> priorities;
+    private final List<String> backpacks;
+    private final List<Integer> priorities;
+    private final List<List<String>> backpackGroups;
 
     public BackpackOrganization(){
+        this.backpackGroups = new ArrayList<>();
         this.backpacks = new ArrayList<>();
         this.priorities = new ArrayList<>();
         try {
             readBackpacksFromFile();
-            for (String s:backpacks) {
-                calcPriorities(getDuplicateItemOutOfBackpack(s));
+            saveBackpacksInGroups();
+            for (List<String> group:backpackGroups) {
+                calcPriorities(getDuplicateOutOfGroup(group));
             }
-
+//            for (String s:backpacks) {
+//                calcPriorities(getDuplicateItemOutOfBackpack(s));
+//            }
         }catch (IOException io){
             throw new RuntimeException("Error 404");
         }
+    }
+
+    private char getDuplicateOutOfGroup(List<String> group) {
+        for (int i=0;i<group.get(0).length();i++){
+            for(int o=0;o<group.get(1).length();o++){
+                for (int u=0;u<group.get(2).length();u++){
+                    if(group.get(1).charAt(o) == group.get(2).charAt(u) && group.get(2).charAt(u) == group.get(0).charAt(i)){
+                        return group.get(0).charAt(i);
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("No char found");
+    }
+
+    private void saveBackpacksInGroups() {
+        for(int i=0;i<backpacks.size();i+=3){
+            ArrayList<String> group = new ArrayList<>();
+            for(int o=0;o<3;o++){
+                group.add(backpacks.get(i+o));
+            }
+            backpackGroups.add(group);
+        }
+    }
+
+
+    private boolean doesntContainChar(char[] alrUsedLetters, char charAt) {
+        for (char c : alrUsedLetters) {
+            if (c == charAt) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private char getDuplicateItemOutOfBackpack(String s) {
