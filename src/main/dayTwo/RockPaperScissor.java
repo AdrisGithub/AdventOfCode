@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RockPaperScissor {
-    List<String> moves;
-    List<Integer> score;
+    private final List<String> moves;
+    private final List<Integer> score;
 
     public RockPaperScissor() {
         this.moves = new ArrayList<>();
